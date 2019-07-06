@@ -28,12 +28,13 @@ function add_localhistoryfile(targetdir = pwd(); append_gitignore = true)
     end
     if append_gitignore
         gifile = joinpath(targetdir, GITIGNORE)
-        if GITIGNORE in checkfiles && !(HISTORYFILE in readlines(gifile))
+        if GITIGNORE in checkfiles && !(HISTORY_FILE in readlines(gifile))
             open(gifile, "a") do fp
-                println(fp, "\n" * GITIGNORE)
+                print(fp, "\n" * HISTORY_FILE)
             end
         end
     end
+    use_localhistoryfile(targetdir)
 end
 
 function rm_localhistoryfile(targetdir = pwd())
@@ -43,9 +44,9 @@ function rm_localhistoryfile(targetdir = pwd())
     end
     if GITIGNORE in checkfiles
         gifile = joinpath(targetdir, GITIGNORE)
-        none_historyfilegi = fileter(x -> x != GITIGNORE, readlines(gifile))
+        none_historyfilegi = filter(x -> x != HISTORY_FILE, readlines(gifile))
         open(gifile, "w") do fp
-            for l in none_history_file_gi
+            for l in none_historyfilegi
                 println(fp, l)
             end
         end
