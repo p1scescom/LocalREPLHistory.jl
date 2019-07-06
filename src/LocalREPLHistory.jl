@@ -4,7 +4,7 @@ HISTORY_FILE = ".julia_history"
 GITIGNORE = ".gitignore"
 
 function init()
-    open("~/.julia/config/startup.jl", "a") do fp
+    open(joinpath(homedir(), ".julia/config/startup.jl"), "a") do fp
         print(fp, """
 using LocalREPLHistory
 LocalREPLHistory.use_localhistoryfile()
