@@ -6,8 +6,7 @@ GITIGNORE = ".gitignore"
 function init()
     open(joinpath(homedir(), ".julia/config/startup.jl"), "a") do fp
         print(fp, """
-using LocalREPLHistory
-LocalREPLHistory.use_localhistoryfile()
+using LocalREPLHistory; LocalREPLHistory.use_localhistoryfile()
 """)
     end
 end
@@ -26,31 +25,41 @@ function add_localhistoryfile(targetdir = pwd(); append_gitignore = true)
             write(fp, "")
         end
     end
-    if append_gitignore
+    if append_gitignore && GITIGNORE in checkfiles
         gifile = joinpath(targetdir, GITIGNORE)
-        if GITIGNORE in checkfiles && !(HISTORY_FILE in readlines(gifile))
+        gilines = readlines(gifile,keep=true)
+        if !(HISTORY_FILE in gilines)
             open(gifile, "a") do fp
-                print(fp, "\n" * HISTORY_FILE)
+                if length(gilines) != 0 && gilines[end][end] != '\n'
+                    print(fp, "\n")
+                end
+                print(fp, HISTORY_FILE * "\n")
             end
         end
     end
     use_localhistoryfile(targetdir)
 end
 
+add = add_localhistoryfile
+
 function rm_localhistoryfile(targetdir = pwd())
     checkfiles = filter(x -> isfile(x), readdir(targetdir))
-    if !(HISTORY_FILE in checkfiles)
-        rm(joinpath(targetdir, HISTORY_FILE))
+    if HISTORY_FILE in checkfiles
+        Base.Filesystem.rm(joinpath(targetdir, HISTORY_FILE))
     end
     if GITIGNORE in checkfiles
         gifile = joinpath(targetdir, GITIGNORE)
         none_historyfilegi = filter(x -> x != HISTORY_FILE, readlines(gifile))
-        open(gifile, "w") do fp
-            for l in none_historyfilegi
-                println(fp, l)
+        if length(none_historyfilegi) != 0
+            open(gifile, "w") do fp
+                for l in none_historyfilegi
+                    println(fp, l)
+                end
             end
         end
     end
 end
+
+rm = rm_localhistoryfile
 
 end # module
