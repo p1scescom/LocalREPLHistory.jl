@@ -21,7 +21,7 @@ When you use local repl history project, you cd project directory.
 Next,
 
 ```
-$ julia -e "using LocalREPLHistory; LocalREPLHistory.add_localhistoryfile()"
+$ julia -e "using LocalREPLHistory; LocalREPLHistory.add()"
 ```
 
 or use repl.
@@ -35,7 +35,7 @@ And when the directory has .gitignore, it adds ".julia_history" to .gitignore .
 You don't need a local repl history, you exec this.
 
 ```
-$ julia -e "using LocalREPLHistory; LocalREPLHistory.rm_localhistoryfile()"
+$ julia -e "using LocalREPLHistory; LocalREPLHistory.rm()"
 ```
 
 It removes .julia_history and ".julia_history" from .gitignore .
